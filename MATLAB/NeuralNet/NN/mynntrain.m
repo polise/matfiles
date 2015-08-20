@@ -48,11 +48,11 @@ for i = 1 : numepochs
     for batch = 1 : numbatches
          
         if batch == numbatches
-            
+            % Train from last batch to end 
             batch_x = train_x(randomorder((batch - 1) * batchsize + 1 : end), :);
             batch_y = train_y(randomorder((batch - 1) * batchsize + 1 : end), :);
         else
-            
+            %train from current batch no to current batch + batchsize
             batch_x = train_x(randomorder((batch - 1) * batchsize + 1 : batch * batchsize), :);
             batch_y = train_y(randomorder((batch - 1) * batchsize + 1 : batch * batchsize), :);
         end
@@ -77,7 +77,7 @@ for i = 1 : numepochs
         end
         
         [output, layerActivations] = mynnff(nn, batch_x);
-     
+
         [e, Lbatch] = computeLoss(batch_y, output, nn.activation_functions{end});
         
         [dW,dBiases] = mynnbp(nn, batch_x, e, layerActivations);

@@ -8,10 +8,10 @@ nn.layersSize   = newLayers;
 nn.noLayers      = length(newLayers);
  
 nn.epochs = 1000;
-nn.batchsize = 100;
+nn.batchsize = 100; % 100; %416; % was 100
 nn.activation_functions              = activation_functions; %  Activation functions of hidden layers
     
-nn.learningRateParams.lr             = 0.1; %  learning rate Note: typically needs to be lower when using 'sigm' activation function and non-normalized inputs.
+nn.learningRateParams.lr             =  0.025; % 0.1; %  learning rate Note: typically needs to be lower when using 'sigm' activation function and non-normalized inputs.
 nn.learningRateParams.scalingFactor  = 0.999; %  Scaling factor for the learning rate (each epoch)
 nn.learningRateParams.lrEpochThres   = 100;
 nn.learningRateParams.schedulingType = 1; % 1 = lr*T / max(currentEpoch, T), 2 = scaling, 3 = lr / (1 + currentEpoch/T)
@@ -32,9 +32,9 @@ nn.weightInitParams.biasConstant     = 0;
     
 nn.weightConstraints.weightPenaltyL2  = 0; % L2 regularization coefficient
 nn.weightConstraints.weightPenaltyL1  = 0; % L1 regularisation coefficient
-nn.weightConstraints.maxNormConstraint= 0; % ???
+nn.weightConstraints.maxNormConstraint= 3; % ???
     
-nn.dropoutParams.dropoutType         = 0;% 0 = no dropout, 1 = bernoulli droput, 2 = gaussian dropout 
+nn.dropoutParams.dropoutType         = 1; % 0 = no dropout, 1 = bernoulli droput, 2 = gaussian dropout 
 nn.dropoutParams.dropoutPresentProbVis            = 0.8;% present probability for a visible node, use 1 if no input layer droput is needed
 nn.dropoutParams.dropoutPresentProbHid            = 0.5;% present probability for a hidden node
     

@@ -1,5 +1,5 @@
 
-type = 1; % 1 is AE, 2 is classifier, 
+type = 2; % 1 is AE, 2 is classifier, 
 
 hiddenActivationFunctions = {'sigm','sigm','sigm','sigm'};
 hiddenLayers = [500 500 500 200 ]; % hidden layers sizes, does not include input or output layers
@@ -15,6 +15,8 @@ visParams.col = 28;
 visParams.row = 28;
 
 load av_data;
+%load av_data_histogram;
+%load histograms_test_sections_av;
 
 % val_x = double(validate_x_AV);
 % val_y = double(validate_y_AV);
@@ -41,8 +43,8 @@ end
 
 dbnParams = mydbnsetup(type, hiddenActivationFunctions, hiddenLayers);
 dbnParams.inputActivationFunction = 'linear'; %sigm for binary inputs, linear for continuous input
-dbnParams.rbmParams.epochs = 1;
-
+dbnParams.rbmParams.epochs = 10;
+dbnParams.rbmParams.lrW = 0.05; %uncomment and run
 % normalise data
 train_x = normaliseData(dbnParams.inputActivationFunction, train_x);
 test_x = normaliseData(dbnParams.inputActivationFunction, test_x);
@@ -53,7 +55,7 @@ test_x = normaliseData(dbnParams.inputActivationFunction, test_x);
 
 nn = mydbnunfoldtonn(dbnParams, dbn, outputSize);
 
-nn.epochs = 1;
+nn.epochs = 10;
 
 % % in case weight initialisation is needed, networks are pre-trained so
 % it's not used here

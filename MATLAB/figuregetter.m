@@ -4,7 +4,10 @@
 
 %s = what; %look in current directory
 %cd ('LBP-TOP/Lips');
-p = what('LBP-TOP/Lips'); %change dir for your directory name 
+%p = what('LBP-TOP/Lips'); %change dir for your directory name 
+p = what('01M'); %change dir for your directory name 
+
+
 lipfiles = p.mat;
 
 %load('sa1.mat');
@@ -15,7 +18,7 @@ for j = 1 %:numel(lipfiles)
     %
     for i = 1:y
         reshaped = reshape(vid(:,i),60,80);
-        imshow(reshape(vid(:,i),60,80));
+        imshow(reshape(vid(:,i),60,80),[]);
         %imshow(vid{:}{i});
         
     end

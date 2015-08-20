@@ -24,7 +24,7 @@ dbnParams.rbmParams = rbmParams;
 
 dbnParams.type = type; %1 is AE, 2 is classifier, 3 is simply a FF NN where the output
 %layer produces features
-dbnParams.inputActivationFunction = 'sigm';
+dbnParams.inputActivationFunction = 'linear'; %changed from sigm
 
 dbnParams.hiddenActivationFunctions = hiddenActivationFunctions;
 dbnParams.hiddenLayers = hiddenLayers;

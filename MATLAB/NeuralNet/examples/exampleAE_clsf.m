@@ -5,7 +5,7 @@ type = 1; % 1 is AE, 2 is classifier,
 %hiddenLayers = [500 500 500 200 ]; % hidden layers sizes, does not include input or output layers
 %if type = 1, i.e., AE then the last layer should be linear and usually a
 % series of decreasing layers are used
-hiddenActivationFunctions = {'sigm','sigm','sigm','linear'}; 
+hiddenActivationFunctions = {'sigm','sigm','sigm','sigm'}; %changed from linear 
 hiddenLayers = [1000 500 250 50]; 
 
 % parameters used for visualisation of first layer weights
@@ -14,33 +14,16 @@ visParams.noSubplots = floor(hiddenLayers(1) / visParams.noExamplesPerSubplot);
 visParams.col = 28;
 visParams.row = 28;
 
+%load av_data;
 load av_data;
 
-% val_x = double(validate_x_AV);
-% val_y = double(validate_y_AV);
-% 
-% %if no validation exists then
-% % val_x = [];
-% % val_y = [];
-% 
-% train_x = double(train_x_AV);
-% train_y = double(train_y_AV);
-% 
-% test_x  = double(test_x_AV);
-% test_y  = double(test_y_AV);
 
 inputSize = size(train_x,2);
+outputSize  = inputSize; % in case of AE it should be equal to the number of inputs
 
-if type == 1 % AE
-   outputSize  = inputSize; % in case of AE it should be equal to the number of inputs
-
-elseif type == 2 % classifier
-    outputSize = size(train_y,2); % in case of classification it should be equal to the number of classes
-
-end
 
 dbnParams = mydbnsetup(type, hiddenActivationFunctions, hiddenLayers);
-dbnParams.inputActivationFunction = 'sigm'; %sigm for binary inputs, linear for continuous input
+dbnParams.inputActivationFunction = 'linear'; %sigm for binary inputs, linear for continuous input
 dbnParams.rbmParams.epochs = 10; %default 10
 
 % normalise data
@@ -54,7 +37,7 @@ test_x = normaliseData(dbnParams.inputActivationFunction, test_x);
 
 nn = mydbnunfoldtonn(dbnParams, dbn, outputSize);
 
-nn.epochs = 20;
+nn.epochs = 10;
 
 % % in case weight initialisation is needed, networks are pre-trained so
 % it's not used here
@@ -63,11 +46,8 @@ nn.epochs = 20;
 nn = useSomeDefaultNNparams(nn);
 
 %if no validation
-if type == 1 % AE
-    [nn, Lbatch, L, L_val]  = mynntrain(nn, train_x, train_x, val_x, val_x);
-elseif type == 2 % classifier
-    [nn, Lbatch, L, L_val]  = mynntrain(nn, train_x, train_y, val_x, val_y);
-end
+[nn, Lbatch, L, L_val]  = mynntrain(nn, train_x, train_x, val_x, val_x); %changed from train_x
+
 
 nn.testing = 1; % make
 % you can use the following output in order to compare the input with the
@@ -88,11 +68,13 @@ nn.W(noEncodingLayers + 1:end) = [];
 nn.biases(noEncodingLayers + 1:end) = [];
 
 newOutputSize = 10; % no classes to recognise
+newOutputSize = 26; % no classes to recognise
+
 
 newLayers2Add = [500 500 newOutputSize]; % size of added layers
 newActivFunctions = {'sigm', 'sigm', 'softmax'}; % activation functions for new layers, last
 % one should always be softmax since it computes the probabilities of the classes
-
+% changed from sigm sigm 
  noLayersNewNetwork = noEncodingLayers + length(newLayers2Add);
  nn.noLayers = noLayersNewNetwork;
 
@@ -107,6 +89,24 @@ nn.layersSize = [nn.layersSize newLayers2Add];
 nn.activation_functions = [nn.activation_functions newActivFunctions];
 nn.W = [nn.W W];
 nn.biases = [nn.biases biases];
+
+nn = useSomeDefaultNNparams(nn);
+nn.batchsize = 1421;
+
+nn.weightConstraints.weightPenaltyL2  = 0; % L2 regularization coefficient
+nn.weightConstraints.weightPenaltyL1  = 0; % L1 regularisation coefficient
+nn.weightConstraints.maxNormConstraint= 3; % ???
+
+nn.learningRateParams.lr             =  0.025; % 0.1; %  learning rate Note: typically needs to be lower when using 'sigm' activation function and non-normalized inputs.
+nn.learningRateParams.scalingFactor  = 0.999; %  Scaling factor for the learning rate (each epoch)
+nn.learningRateParams.lrEpochThres   = 100;
+nn.learningRateParams.schedulingType = 1; % 1 = lr*T / max(currentEpoch, T), 2 = scaling, 3 = lr / (1 + currentEpoch/T)
+nn.learningRateParams.initialLR      = 0.1; 
+
+nn.momParams.momentum                = 0.5;  %  Momentum
+nn.momParams.initialMomentum         = 0.5; 
+
+nn.dropoutParams.dropoutType         = 1; % 0 = no dropout, 1 = bernoulli droput, 2 = gaussian dropout 
 
 % End of creating new NN
 

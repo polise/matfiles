@@ -1,0 +1,46 @@
+% Confusion Matrix Code
+
+%Sum output of every videos many frames, making use of no_frames_test
+
+
+summed_output = zeros(size(no_frames_test,1),26);
+frame = 1;
+for i = 1:size(no_frames_test,1) 
+    
+    for j = 1:no_frames_test(i,1)
+       summed_output(i,:) = summed_output(i,:) + output(frame,:);
+        frame = frame+1;
+
+    end
+    
+end
+
+% Take the maximum of every row and put it into a binary chart.
+
+max_row = zeros(26,26);
+
+letter = 1;
+count = 1;
+
+
+for i = 1:size(no_frames_test,1)
+  
+    
+    [M,I] = max(summed_output(i,:));
+    max_row(letter,I) = max_row(letter,I) + 1;
+  
+    if (rem(i,7) == 0)
+       letter = letter + 1;
+       
+    end
+    
+    count = count + 1;
+    
+end
+
+
+
+
+
+
+

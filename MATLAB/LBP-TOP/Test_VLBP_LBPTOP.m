@@ -26,32 +26,33 @@ tst = what('Lips');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %a = tst.jpg;
 %a = dir('*.jpg'); 
-%a = dir('*.mat');
+a = dir('*.mat');
 
-a = load('formatted_av_lbp_top_data.mat'); %{9x780 cell}
+%a = load('formatted_av_lbp_top_data.mat'); %{9x780 cell}
+%a = tst.mat; %{9x780 cell}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 VolData = [];
 
-[frames videos] =  size(a.pre_lbp_top_refitted_av_files); %{9x780}
+%[frames videos] =  size(a.pre_lbp_top_refitted_av_files); %{9x780}
+%[frames videos] =  size(a.vid); %{9x780}
+Histogram = cell(1,780);
 
-Histogram = cell(1,videos);
-
-for j = 1:videos
+%for j = 1:videos
 
 
-for i = 1 : frames %length(a) 1:9 
+for i = 1 : length(a) %frames % 1:9 
    
     
-        %ImgName = getfield(a, {i}, 'name');
+        ImgName = getfield(a, {i}, 'name');
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %Imgdat = imread(ImgName);
-        %Imgdat = load(ImgName);
+        Imgdat = load(ImgName);
 
         %Imgdat = data from frame no vid no.==j,k
-        
-        Imgdat = a.pre_lbp_top_refitted_av_files{i,j}; %frame (row), video (col)
+       % Imgdat = a.pre_lbp_top_refitted_av_files{i,j}; %frame (row), video (col)
+        %Imgdat = a.pre_lbp_top_refitted_av_files{i,j}; %frame (row), video (col)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
        % if size(Imgdat, 3) == 3 % if color images, convert it to gray
@@ -59,10 +60,10 @@ for i = 1 : frames %length(a) 1:9
         %end
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %[height width] = size(Imgdat);
+        [height width] = size(Imgdat);
         %[height width] = size(Imgdat(1).vid);
 
-        [rows columns] = size(a.pre_lbp_top_refitted_av_files{1,1}); %{60x80}
+        %[rows columns] = size(a.pre_lbp_top_refitted_av_files{1,1}); %{60x80}
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         %Dynamically chence voldata(3) but set it originally to size of first.
@@ -156,7 +157,7 @@ else
     nDim = U8File(1, 2); %dimensionality of uniform patterns
     Code = U8File(2 : end, :);
     clear U8File;
-end
+
 % call LBPTOP
 Histogram{1,j} = LBPTOP(VolData, FxRadius, FyRadius, TInterval, NeighborPoints, TimeLength, BorderLength, bBilinearInterpolation, Bincount, Code);
 

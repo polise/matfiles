@@ -1,5 +1,7 @@
-test_1 = reshape(test_x(20,:),60,80); % change number
-test_2 = reshape(outputAE(20,:),60,80); 
+test1 = test_x(40,:);
+test2 = outputAE(40,:);
+test_1 = reshape(test1,60,80); % change number
+test_2 = reshape(test2,60,80); 
 
 % subplot(1,2,1),imshow(test_1);
 % subplot(1,2,2),imshow(test_2);
